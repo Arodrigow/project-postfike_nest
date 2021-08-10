@@ -1,36 +1,28 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 
-@Controller('tag')
+@Controller('tags')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 
   @Post()
-  create(@Body() createTagDto: CreateTagDto) {
-    return this.tagService.create(createTagDto);
+  async create(@Body() createTagDto: CreateTagDto) {
+    return await this.tagService.create(createTagDto);
   }
 
   @Get()
-  findAll() {
-    return this.tagService.findAll();
+  async findAll() {
+    return await this.tagService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tagService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.tagService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tagService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.tagService.remove(id);
   }
 }
