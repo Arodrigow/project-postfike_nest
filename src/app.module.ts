@@ -4,9 +4,17 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TagModule } from './tag/tag.module';
 import { ImagesModule } from './images/images.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [PostModule, UserModule, AuthModule, TagModule, ImagesModule],
+  imports: [
+    PostModule,
+    UserModule,
+    AuthModule,
+    TagModule,
+    ImagesModule,
+    TypeOrmModule.forRoot(),
+  ],
   controllers: [],
   providers: [],
 })
