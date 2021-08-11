@@ -16,55 +16,48 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  async create(@Body() createPostDto: CreatePostDto) {
+    return await this.postService.create(createPostDto);
   }
 
-  @Post(':id/bookmark')
-  addBookmark(@Param('id') postId: string) {
-    //TODO: user must be logged in, so we have acces to its ID from JWT
-    const userId = 'USER ID TAKEN FROM JWT';
-    return this.postService.addBookmark(postId, userId);
-  }
+  // @Post(':id/bookmark')
+  // async addBookmark(@Param('id') postId: string) {
+  //   //TODO: user must be logged in, so we have acces to its ID from JWT
+  //   const userId = 'USER ID TAKEN FROM JWT';
+  //   return await this.postService.addBookmark(postId, userId);
+  // }
 
-  @Post(':id/view')
-  addView(@Param('id') postId: string) {
-    //TODO: user must be logged in, so we have acces to its ID from JWT
-    const userId = 'USER ID TAKEN FROM JWT';
-    return this.postService.addView(postId, userId);
-  }
+  // @Post(':id/view')
+  // async addView(@Param('id') postId: string) {
+  //   //TODO: user must be logged in, so we have acces to its ID from JWT
+  //   const userId = 'USER ID TAKEN FROM JWT';
+  //   return await this.postService.addView(postId, userId);
+  // }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  async findAll() {
+    return await this.postService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.postService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(id, updatePostDto);
+  async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+    return await this.postService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.postService.remove(id);
   }
 
-  @Delete(':id/bookmark')
-  deleteBookmark(@Param('id') postId: string) {
-    //TODO: user must be logged in, so we have acces to its ID from JWT
-    const userId = 'USER ID TAKEN FROM JWT';
-    return this.postService.deleteBookmark(postId, userId);
-  }
-
-  @Delete(':id/bookmark')
-  deleteView(@Param('id') postId: string) {
-    //TODO: user must be logged in, so we have acces to its ID from JWT
-    const userId = 'USER ID TAKEN FROM JWT';
-    return this.postService.deleteView(postId, userId);
-  }
+  // @Delete(':id/bookmark')
+  // async deleteBookmark(@Param('id') postId: string) {
+  //   //TODO: user must be logged in, so we have acces to its ID from JWT
+  //   const userId = 'USER ID TAKEN FROM JWT';
+  //   return await this.postService.deleteBookmark(postId, userId);
+  // }
 }
