@@ -26,6 +26,9 @@ lerna-debug.log*
 .settings/
 *.sublime-workspace
 
+# Database - SQLite
+/src/database/database.sqlite
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json

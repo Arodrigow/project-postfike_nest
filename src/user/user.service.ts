@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './repositories/implementations/user.repository';
 
 @Injectable()
 export class UserService {
-  createUser(obj: CreateUserDto) {
-    throw new Error('Method not implemented.');
+  constructor(private repo: UserRepository) {}
+
+  async createUser(obj: CreateUserDto): Promise<void> {
+    await this.repo.createUser(obj);
   }
-  getUserProfile(email: string) {
-    throw new Error('Method not implemented.');
+
+  async getUserProfile(id: string) {
+    const userProfile = await this.repo.findUserProfile(id);
+    return userProfile;
   }
-  updateUser(email: string, obj: UpdateUserDto) {
-    throw new Error('Method not implemented.');
+
+  async updateUser(id: string, obj: UpdateUserDto): Promise<void> {
+    await this.repo.updateUserProfile(id, obj);
   }
-  deleteUser(email: string) {
-    throw new Error('Method not implemented.');
+
+  async deleteUser(id: string): Promise<void> {
+    await this.repo.deleteUser(id);
   }
 }
