@@ -5,6 +5,7 @@ import { User } from '../entities/user.entity';
 export interface IUserRepository {
   createUser(obj: CreateUserDto): Promise<void>;
   findUserProfile(id: string): Promise<User>;
+  findUserByEmail(email: string): Promise<User>;
   updateUserProfile(id: string, obj: UpdateUserDto): Promise<void>;
   deleteUser(id: string): Promise<void>;
 }

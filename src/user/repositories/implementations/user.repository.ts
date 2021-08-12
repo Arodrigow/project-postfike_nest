@@ -19,6 +19,9 @@ export class UserRepository implements IUserRepository {
     return user;
   }
 
+  async findUserByEmail(email: string): Promise<User> {
+    return await this.repo.findOne({ email });
+  }
   async updateUserProfile(id: string, obj: UpdateUserDto): Promise<void> {
     await this.repo.update(id, obj);
   }
