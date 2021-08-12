@@ -1,11 +1,15 @@
+import { User } from './../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
+import { Bookmark } from './bookmark.entity';
 
 @Entity('posts')
 export class Post {
@@ -35,6 +39,12 @@ export class Post {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => User, (user) => user.posts)
+  user: User;
+
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.post)
+  bookmarks: Bookmark[];
 
   constructor() {
     if (!this.id) {
