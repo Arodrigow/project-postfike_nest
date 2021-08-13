@@ -1,5 +1,4 @@
 import { UserRepository } from '../../../user/repositories/implementations/user.repository';
-import { User } from '../../../user/entities/user.entity';
 import { Bookmark } from '../../entities/bookmark.entity';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -54,12 +53,14 @@ export class PostRepository implements IPostRepository {
     await this.repo.delete(id);
   }
 
-  async deleteBookmark(postId: string): Promise<void> {
-    //REVIEW THIS PART
-    this.bookmarkRepo
-      .createQueryBuilder('bm')
-      .delete()
-      .where('bm.post.id = postId');
+  async deleteBookmark(userId: string, postId: string): Promise<void> {
+    const bm = await this.bookmarkRepo.findOne(
+      { post: { id: postId } },
+      { relations: ['user'] },
+    );
+    if (bm && bm.user.id === userId) {
+      await this.bookmarkRepo.delete(bm.id);
+    }
   }
 
   private async isPostOwner(userId: string, postId: string): Promise<void> {

@@ -31,7 +31,6 @@
     "@nestjs/platform-express": "^7.6.15",
     "@nestjs/typeorm": "^8.0.2",
     "bcrypt": "^5.0.1",
-    "csurf": "^1.11.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

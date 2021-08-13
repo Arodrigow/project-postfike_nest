@@ -11,11 +11,11 @@ export class PostService {
     return await this.repo.createPost(id, createPostDto);
   }
 
-  // async addView(postId: string, userId: string) {
-  //   throw new Error('Method not implemented.');
-  // }
+  async addBookmark(postId: string, userId: string) {
+    return await this.repo.createBookmark(postId, userId);
+  }
 
-  // async addBookmark(postId: string, userId: string) {
+  // async addView(postId: string, userId: string) {
   //   throw new Error('Method not implemented.');
   // }
 
@@ -35,7 +35,7 @@ export class PostService {
     return await this.repo.deletePost(userId, id);
   }
 
-  // async deleteBookmark(postId: string, userId: string) {
-  //   throw new Error('Method not implemented.');
-  // }
+  async deleteBookmark(postId: string, userId: string) {
+    await this.repo.deleteBookmark(userId, postId);
+  }
 }
