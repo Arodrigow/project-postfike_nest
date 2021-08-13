@@ -1,6 +1,6 @@
-import { UserRepository } from './../../../user/repositories/implementations/user.repository';
-import { User } from './../../../user/entities/user.entity';
-import { Bookmark } from './../../entities/bookmark.entity';
+import { UserRepository } from '../../../user/repositories/implementations/user.repository';
+import { User } from '../../../user/entities/user.entity';
+import { Bookmark } from '../../entities/bookmark.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../../dto/create-post.dto';

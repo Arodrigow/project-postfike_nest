@@ -1,5 +1,5 @@
-import { Bookmark } from './../../post/entities/bookmark.entity';
-import { Post } from './../../post/entities/post.entity';
+import { Bookmark } from '../../post/entities/bookmark.entity';
+import { Post } from '../../post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,

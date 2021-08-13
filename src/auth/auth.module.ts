@@ -1,8 +1,8 @@
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { DatabaseModule } from './../providers/database/database.module';
-import { UserRepository } from './../user/repositories/implementations/user.repository';
+import { UserRepository } from '../domain/user/repositories/implementations/user.repository';
 import { LocalStrategy } from './local/local.strategy';
-import { UserService } from './../user/user.service';
+import { UserService } from '../domain/user/user.service';
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';

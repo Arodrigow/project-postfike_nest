@@ -1,5 +1,5 @@
 import { Connection } from 'typeorm';
-import { Post } from '../../post/entities/post.entity';
+import { Post } from '../../domain/post/entities/post.entity';
 
 export const postProvider = [
   {

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { PostModule } from './post/post.module';
-import { UserModule } from './user/user.module';
+import { PostModule } from './domain/post/post.module';
+import { UserModule } from './domain/user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { TagModule } from './tag/tag.module';
-import { ImagesModule } from './images/images.module';
+import { TagModule } from './domain/tag/tag.module';
+import { ImagesModule } from './domain/images/images.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 

@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
 
-import { User } from './../../user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 import { Post } from './post.entity';
 

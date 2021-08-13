@@ -1,5 +1,5 @@
 import { Connection } from 'typeorm';
-import { Bookmark } from '../../../post/entities/bookmark.entity';
+import { Bookmark } from '../../../domain/post/entities/bookmark.entity';
 
 export const bookmarkProvider = [
   {

@@ -1,4 +1,4 @@
-import { Tag } from '../../tag/entities/tag.entity';
+import { Tag } from '../../domain/tag/entities/tag.entity';
 import { Connection } from 'typeorm';
 
 export const tagProvider = [
