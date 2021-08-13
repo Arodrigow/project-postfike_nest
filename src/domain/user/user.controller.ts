@@ -5,9 +5,9 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -23,24 +23,26 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async getUserProfile(@Param() params) {
+  @Get()
+  async getUserProfile(@Request() req) {
     //Alreay have access to user's id or email through JWT, use it
-    const id = params;
+    const id = req.user.userId as string;
     return await this.userService.getUserProfile(id);
   }
 
-  @Put(':id')
-  async updateUser(@Param() params, @Body() obj: UpdateUserDto) {
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  async updateUser(@Request() req, @Body() obj: UpdateUserDto) {
     //Alreay have access to user's id or email through JWT, use it
-    const id = params;
+    const id = req.user.userId as string;
     return await this.userService.updateUser(id, obj);
   }
 
-  @Delete(':id')
-  async deleteUser(@Param() params) {
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  async deleteUser(@Request() req) {
     //Alreay have access to user's id or email through JWT, use it
-    const id = params;
+    const id = req.user.userId as string;
     return await this.userService.deleteUser(id);
   }
 }
