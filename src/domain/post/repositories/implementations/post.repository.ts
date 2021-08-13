@@ -1,6 +1,11 @@
 import { UserRepository } from '../../../user/repositories/implementations/user.repository';
 import { Bookmark } from '../../entities/bookmark.entity';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
@@ -23,6 +28,10 @@ export class PostRepository implements IPostRepository {
   }
 
   async createBookmark(postId: string, userId: string): Promise<void> {
+    const bmExists = await this.bookmarkAlreadyExists(userId, postId);
+    if (bmExists) {
+      throw new BadRequestException();
+    }
     const post = await this.findPost(postId);
     const user = await this.userRepo.findUserProfile(userId);
 
@@ -54,13 +63,12 @@ export class PostRepository implements IPostRepository {
   }
 
   async deleteBookmark(userId: string, postId: string): Promise<void> {
-    const bm = await this.bookmarkRepo.findOne(
-      { post: { id: postId } },
-      { relations: ['user'] },
-    );
-    if (bm && bm.user.id === userId) {
-      await this.bookmarkRepo.delete(bm.id);
+    const bm = await this.bookmarkAlreadyExists(userId, postId);
+
+    if (!bm || bm.user.id !== userId) {
+      throw new BadRequestException();
     }
+    await this.bookmarkRepo.delete(bm.id);
   }
 
   private async isPostOwner(userId: string, postId: string): Promise<void> {
@@ -69,5 +77,20 @@ export class PostRepository implements IPostRepository {
     if (post.user.id !== userId) {
       throw new UnauthorizedException();
     }
+  }
+
+  private async bookmarkAlreadyExists(
+    userId: string,
+    postId: string,
+  ): Promise<Bookmark> {
+    const bm = await this.bookmarkRepo.findOne(
+      { post: { id: postId }, user: { id: userId } },
+      { relations: ['user'] },
+    );
+
+    if (!bm) {
+      return null;
+    }
+    return bm;
   }
 }
