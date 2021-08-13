@@ -9,13 +9,13 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    TypeOrmModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     PostModule,
     UserModule,
     AuthModule,
     TagModule,
     ImagesModule,
-    TypeOrmModule.forRoot(),
-    ConfigModule.forRoot(),
   ],
   controllers: [],
   providers: [],

@@ -8,8 +8,10 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -20,6 +22,7 @@ export class UserController {
     return await this.userService.createUser(obj);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUserProfile(@Param() params) {
     //Alreay have access to user's id or email through JWT, use it
