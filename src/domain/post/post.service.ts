@@ -7,8 +7,8 @@ import { PostRepository } from './repositories/implementations/post.repository';
 export class PostService {
   constructor(private repo: PostRepository) {}
 
-  async create(createPostDto: CreatePostDto) {
-    return await this.repo.createPost(createPostDto);
+  async create(id: string, createPostDto: CreatePostDto) {
+    return await this.repo.createPost(id, createPostDto);
   }
 
   // async addView(postId: string, userId: string) {
@@ -27,12 +27,12 @@ export class PostService {
     return await this.repo.findPost(id);
   }
 
-  async update(id: string, updatePostDto: UpdatePostDto) {
-    return await this.repo.updatePost(id, updatePostDto);
+  async update(userId: string, id: string, updatePostDto: UpdatePostDto) {
+    return await this.repo.updatePost(userId, id, updatePostDto);
   }
 
-  async remove(id: string) {
-    return await this.repo.deletePost(id);
+  async remove(userId: string, id: string) {
+    return await this.repo.deletePost(userId, id);
   }
 
   // async deleteBookmark(postId: string, userId: string) {

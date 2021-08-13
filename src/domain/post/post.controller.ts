@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../../auth/jwt/jwt-auth.guard';
 import {
   Controller,
   Get,
@@ -6,6 +7,8 @@ import {
   Put,
   Param,
   Delete,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -15,9 +18,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createPostDto: CreatePostDto) {
-    return await this.postService.create(createPostDto);
+  async create(@Request() req, @Body() createPostDto: CreatePostDto) {
+    return await this.postService.create(req.user.userId, createPostDto);
   }
 
   // @Post(':id/bookmark')
@@ -44,14 +48,20 @@ export class PostController {
     return await this.postService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return await this.postService.update(id, updatePostDto);
+  async update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return await this.postService.update(req.user.userId, id, updatePostDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return await this.postService.remove(id);
+  async remove(@Request() req, @Param('id') id: string) {
+    return await this.postService.remove(req.user.userId, id);
   }
 
   // @Delete(':id/bookmark')

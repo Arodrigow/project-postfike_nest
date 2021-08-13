@@ -1,7 +1,7 @@
 import { UserRepository } from '../../../user/repositories/implementations/user.repository';
 import { User } from '../../../user/entities/user.entity';
 import { Bookmark } from '../../entities/bookmark.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
@@ -16,8 +16,10 @@ export class PostRepository implements IPostRepository {
     private userRepo: UserRepository,
   ) {}
 
-  async createPost(obj: CreatePostDto): Promise<void> {
+  async createPost(id: string, obj: CreatePostDto): Promise<void> {
     const createdPost = this.repo.create(obj);
+    const user = await this.userRepo.findUserProfile(id);
+    createdPost.user = user;
     await this.repo.save(createdPost);
   }
 
@@ -33,14 +35,22 @@ export class PostRepository implements IPostRepository {
     const foundPost = await this.repo.findOne(id, { relations: ['user'] });
     return foundPost;
   }
+
   async findAll(): Promise<Post[]> {
-    return await this.repo.find();
+    return await this.repo.find({ relations: ['user'] });
   }
 
-  async updatePost(id: string, obj: UpdatePostDto): Promise<void> {
+  async updatePost(
+    userId: string,
+    id: string,
+    obj: UpdatePostDto,
+  ): Promise<void> {
+    await this.isPostOwner(userId, id);
     await this.repo.update(id, obj);
   }
-  async deletePost(id: string): Promise<void> {
+
+  async deletePost(userId: string, id: string): Promise<void> {
+    await this.isPostOwner(userId, id);
     await this.repo.delete(id);
   }
 
@@ -50,5 +60,13 @@ export class PostRepository implements IPostRepository {
       .createQueryBuilder('bm')
       .delete()
       .where('bm.post.id = postId');
+  }
+
+  private async isPostOwner(userId: string, postId: string): Promise<void> {
+    const post = await this.findPost(postId);
+
+    if (post.user.id !== userId) {
+      throw new UnauthorizedException();
+    }
   }
 }
