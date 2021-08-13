@@ -1,3 +1,4 @@
+import { User } from '../domain/user/entities/user.entity';
 import { UserService } from '../domain/user/user.service';
 
 import { Injectable } from '@nestjs/common';
@@ -18,6 +19,14 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  async validateJwtUser(userId: string): Promise<User> {
+    const user = await this.userService.getUserProfile(userId);
+    if (!user) {
+      return null;
+    }
+    return user;
   }
 
   async login(user: any) {
