@@ -37,6 +37,8 @@ export class PostRepository implements IPostRepository {
 
     const createdBookmark = this.bookmarkRepo.create({ post, user });
     await this.bookmarkRepo.save(createdBookmark);
+    post.count_bookmark++;
+    await this.repo.save(post);
   }
 
   async findPost(id: string): Promise<Post> {
@@ -64,11 +66,15 @@ export class PostRepository implements IPostRepository {
 
   async deleteBookmark(userId: string, postId: string): Promise<void> {
     const bm = await this.bookmarkAlreadyExists(userId, postId);
+    const post = await this.findPost(postId);
 
     if (!bm || bm.user.id !== userId) {
       throw new BadRequestException();
     }
+
     await this.bookmarkRepo.delete(bm.id);
+    post.count_bookmark--;
+    await this.repo.save(post);
   }
 
   private async isPostOwner(userId: string, postId: string): Promise<void> {
