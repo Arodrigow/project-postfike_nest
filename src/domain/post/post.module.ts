@@ -1,3 +1,5 @@
+import { ImagesRepository } from './../images/repositories/implementations/images.repository';
+import { ImagesService } from './../images/images.service';
 import { UserService } from './../user/user.service';
 import { TagService } from './../tag/tag.service';
 import { TagsRepository } from './../tag/repositories/implementations/tag.repository';
@@ -11,6 +13,7 @@ import { DatabaseModule } from '../../providers/database/database.module';
 import { postProvider } from '../../providers/post/post.provider';
 import { PostRepository } from './repositories/implementations/post.repository';
 import { userProvider } from '../../providers/user/user.provider';
+import { imagesProvider } from '../../providers/images/images.provider';
 
 @Module({
   imports: [DatabaseModule],
@@ -25,6 +28,9 @@ import { userProvider } from '../../providers/user/user.provider';
     TagService,
     TagsRepository,
     ...tagProvider,
+    ImagesService,
+    ImagesRepository,
+    ...imagesProvider,
     ...bookmarkProvider,
   ],
 })

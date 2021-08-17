@@ -15,6 +15,14 @@ export class PostService {
     return await this.repo.createBookmark(postId, userId);
   }
 
+  async addImages(
+    userId: string,
+    postId: string,
+    images: Express.Multer.File[],
+  ) {
+    return await this.repo.addImages(userId, postId, images);
+  }
+
   async findAll() {
     return await this.repo.findAll();
   }

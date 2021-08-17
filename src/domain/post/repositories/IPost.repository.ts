@@ -5,6 +5,11 @@ import { Post } from '../entities/post.entity';
 export interface IPostRepository {
   createPost(id: string, obj: CreatePostDto): Promise<void>;
   createBookmark(postId: string, userId: string): Promise<void>;
+  addImages(
+    userId: string,
+    postId: string,
+    images: Express.Multer.File[],
+  ): Promise<void>;
   findPost(id: string): Promise<Post>;
   findAll(): Promise<Post[]>;
   updatePost(userId: string, id: string, obj: UpdatePostDto): Promise<void>;

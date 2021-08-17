@@ -1,4 +1,4 @@
-import { TagService } from './../../../tag/tag.service';
+import { ImagesService } from './../../../images/images.service';
 import { UserService } from './../../../user/user.service';
 import { Bookmark } from '../../entities/bookmark.entity';
 import {
@@ -19,7 +19,7 @@ export class PostRepository implements IPostRepository {
     @Inject('POST_REPOSITORY') private repo: Repository<Post>,
     @Inject('BOOKMARK_REPOSITORY') private bookmarkRepo: Repository<Bookmark>,
     private userService: UserService,
-    private tagService: TagService,
+    private imagesService: ImagesService,
   ) {}
 
   async createPost(id: string, obj: CreatePostDto): Promise<void> {
@@ -42,6 +42,14 @@ export class PostRepository implements IPostRepository {
     await this.bookmarkRepo.save(createdBookmark);
     post.count_bookmark++;
     await this.repo.save(post);
+  }
+
+  async addImages(
+    userId: string,
+    postId: string,
+    images: Express.Multer.File[],
+  ): Promise<void> {
+    await this.imagesService.uploadImages(images);
   }
 
   async findPost(id: string): Promise<Post> {

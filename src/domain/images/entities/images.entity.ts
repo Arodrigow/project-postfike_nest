@@ -1,12 +1,14 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuidV4 } from 'uuid';
 
-@Entity()
+@Entity('images')
 export class Images {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
-  path: string;
+  url: string;
+  @Column()
+  key: string;
 
   constructor() {
     if (this.id) {

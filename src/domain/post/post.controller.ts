@@ -9,10 +9,13 @@ import {
   Delete,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('posts')
 export class PostController {
@@ -29,6 +32,17 @@ export class PostController {
   async addBookmark(@Request() req, @Param('id') postId: string) {
     const userId = req.user.userId;
     return await this.postService.addBookmark(postId, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/images')
+  @UseInterceptors(FilesInterceptor('files', 6))
+  async addImages(
+    @Request() req,
+    @UploadedFiles() images: Array<Express.Multer.File>,
+    @Param('id') postId: string,
+  ) {
+    return await this.postService.addImages(req.user.userId, postId, images);
   }
 
   @Get()
