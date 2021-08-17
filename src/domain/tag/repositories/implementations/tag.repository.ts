@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { CreateTagDto } from '../../dto/create-tag.dto';
 import { Tag } from '../../entities/tag.entity';
 import { Repository } from 'typeorm';
@@ -10,11 +10,12 @@ export class TagsRepository implements ITagRepository {
 
   async create(obj: CreateTagDto): Promise<void> {
     const newTag = this.repo.create(obj);
+    newTag.posts = [];
     await this.repo.save(newTag);
   }
 
   async findTag(id: string): Promise<Tag> {
-    const foundTag = await this.repo.findOne(id);
+    const foundTag = await this.repo.findOne(id, { relations: ['posts'] });
     return foundTag;
   }
 
@@ -23,6 +24,10 @@ export class TagsRepository implements ITagRepository {
   }
 
   async delete(id: string): Promise<void> {
+    const post = await this.findTag(id);
+    if (post.posts.length >= 1) {
+      throw new ForbiddenException();
+    }
     await this.repo.delete(id);
   }
 }

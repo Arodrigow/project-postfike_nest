@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UpdateUserDto } from '../../dto/update-user.dto';
@@ -27,6 +27,10 @@ export class UserRepository implements IUserRepository {
   }
 
   async deleteUser(id: string): Promise<void> {
+    const user = await this.repo.findOne(id, { relations: ['posts'] });
+    if (user.posts.length >= 1) {
+      throw new BadRequestException();
+    }
     await this.repo.delete(id);
   }
 }

@@ -1,4 +1,5 @@
-import { UserRepository } from '../../../user/repositories/implementations/user.repository';
+import { TagService } from './../../../tag/tag.service';
+import { UserService } from './../../../user/user.service';
 import { Bookmark } from '../../entities/bookmark.entity';
 import {
   BadRequestException,
@@ -17,12 +18,14 @@ export class PostRepository implements IPostRepository {
   constructor(
     @Inject('POST_REPOSITORY') private repo: Repository<Post>,
     @Inject('BOOKMARK_REPOSITORY') private bookmarkRepo: Repository<Bookmark>,
-    private userRepo: UserRepository,
+    private userService: UserService,
+    private tagService: TagService,
   ) {}
 
   async createPost(id: string, obj: CreatePostDto): Promise<void> {
     const createdPost = this.repo.create(obj);
-    const user = await this.userRepo.findUserProfile(id);
+    const user = await this.userService.getUserProfile(id);
+
     createdPost.user = user;
     await this.repo.save(createdPost);
   }
@@ -33,7 +36,7 @@ export class PostRepository implements IPostRepository {
       throw new BadRequestException();
     }
     const post = await this.findPost(postId);
-    const user = await this.userRepo.findUserProfile(userId);
+    const user = await this.userService.getUserProfile(userId);
 
     const createdBookmark = this.bookmarkRepo.create({ post, user });
     await this.bookmarkRepo.save(createdBookmark);
@@ -42,12 +45,14 @@ export class PostRepository implements IPostRepository {
   }
 
   async findPost(id: string): Promise<Post> {
-    const foundPost = await this.repo.findOne(id, { relations: ['user'] });
+    const foundPost = await this.repo.findOne(id, {
+      relations: ['user', 'tags'],
+    });
     return foundPost;
   }
 
   async findAll(): Promise<Post[]> {
-    return await this.repo.find({ relations: ['user'] });
+    return await this.repo.find({ relations: ['user', 'tags'] });
   }
 
   async updatePost(
@@ -55,8 +60,9 @@ export class PostRepository implements IPostRepository {
     id: string,
     obj: UpdatePostDto,
   ): Promise<void> {
-    await this.isPostOwner(userId, id);
-    await this.repo.update(id, obj);
+    const post = await this.isPostOwner(userId, id);
+    Object.assign(post, obj);
+    await this.repo.save(post);
   }
 
   async deletePost(userId: string, id: string): Promise<void> {
@@ -77,12 +83,13 @@ export class PostRepository implements IPostRepository {
     await this.repo.save(post);
   }
 
-  private async isPostOwner(userId: string, postId: string): Promise<void> {
+  private async isPostOwner(userId: string, postId: string): Promise<Post> {
     const post = await this.findPost(postId);
 
     if (post.user.id !== userId) {
       throw new UnauthorizedException();
     }
+    return post;
   }
 
   private async bookmarkAlreadyExists(

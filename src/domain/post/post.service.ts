@@ -15,10 +15,6 @@ export class PostService {
     return await this.repo.createBookmark(postId, userId);
   }
 
-  // async addView(postId: string, userId: string) {
-  //   throw new Error('Method not implemented.');
-  // }
-
   async findAll() {
     return await this.repo.findAll();
   }

@@ -1,8 +1,11 @@
+import { Tag } from './../../tag/entities/tag.entity';
 import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -26,9 +29,6 @@ export class Post {
   count_bookmark: number;
 
   @Column({ nullable: true })
-  count_view: number;
-
-  @Column({ nullable: true })
   details: string;
 
   @Column({ nullable: true })
@@ -39,6 +39,10 @@ export class Post {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToMany(() => Tag, (tag) => tag.posts)
+  @JoinTable()
+  tags: Tag[];
 
   @ManyToOne(() => User, (user) => user.posts)
   user: User;
@@ -54,8 +58,6 @@ export class Post {
       this.expiration = new Date();
       this.expiration.setDate(this.expiration.getDate() + 7);
     }
-
     this.count_bookmark = 0;
-    this.count_view = 0;
   }
 }

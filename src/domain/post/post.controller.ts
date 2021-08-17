@@ -31,13 +31,6 @@ export class PostController {
     return await this.postService.addBookmark(postId, userId);
   }
 
-  // @Post(':id/view')
-  // async addView(@Param('id') postId: string) {
-  //   //TODO: user must be logged in, so we have acces to its ID from JWT
-  //   const userId = 'USER ID TAKEN FROM JWT';
-  //   return await this.postService.addView(postId, userId);
-  // }
-
   @Get()
   async findAll() {
     return await this.postService.findAll();

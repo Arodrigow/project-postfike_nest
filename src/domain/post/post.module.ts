@@ -1,3 +1,7 @@
+import { UserService } from './../user/user.service';
+import { TagService } from './../tag/tag.service';
+import { TagsRepository } from './../tag/repositories/implementations/tag.repository';
+import { tagProvider } from './../../providers/tag/tag.provider';
 import { UserRepository } from '../user/repositories/implementations/user.repository';
 import { bookmarkProvider } from '../../providers/post/bookmark/bookmark.provider';
 import { Module } from '@nestjs/common';
@@ -13,11 +17,15 @@ import { userProvider } from '../../providers/user/user.provider';
   controllers: [PostController],
   providers: [
     PostService,
-    ...postProvider,
-    ...bookmarkProvider,
-    ...userProvider,
     PostRepository,
+    ...postProvider,
+    UserService,
     UserRepository,
+    ...userProvider,
+    TagService,
+    TagsRepository,
+    ...tagProvider,
+    ...bookmarkProvider,
   ],
 })
 export class PostModule {}
