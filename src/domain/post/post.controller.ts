@@ -72,6 +72,16 @@ export class PostController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete(':id/images/:imgId')
+  async removeImage(@Request() req, @Param() param) {
+    return await this.postService.deleteImage(
+      req.user.userId,
+      param.id,
+      param.imgId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/bookmark')
   async deleteBookmark(@Request() req, @Param('id') postId: string) {
     const userId = req.user.userId;

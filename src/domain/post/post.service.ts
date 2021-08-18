@@ -42,4 +42,8 @@ export class PostService {
   async deleteBookmark(postId: string, userId: string) {
     await this.repo.deleteBookmark(userId, postId);
   }
+
+  async deleteImage(userId: string, postId: string, imageId: string) {
+    await this.repo.deleteImage(userId, postId, imageId);
+  }
 }

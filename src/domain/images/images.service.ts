@@ -14,7 +14,6 @@ export class ImagesService {
 
   async uploadImages(images: Array<Express.Multer.File>) {
     const s3 = new S3();
-    let image;
 
     for (const x in images) {
       const dataBuffer = images[x].buffer;
@@ -26,12 +25,23 @@ export class ImagesService {
           Key: `${uuidV4()}-${fileName}`,
         })
         .promise();
-      image = await this.repo.create({
+      await this.repo.create({
         key: uploadResult.Key,
         url: uploadResult.Location,
       });
     }
+  }
 
-    return image;
+  async deleteImage(imageId: string) {
+    const img = await this.repo.find(imageId);
+
+    const s3 = new S3();
+    await s3
+      .deleteObject({
+        Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
+        Key: img.key,
+      })
+      .promise();
+    await this.repo.delete(imageId);
   }
 }

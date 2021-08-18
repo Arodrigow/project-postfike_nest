@@ -10,4 +10,12 @@ export class ImagesRepository implements IImagesRepository {
   async create(obj: CreateImageDto): Promise<void> {
     await this.repo.save(obj);
   }
+
+  async find(id: string): Promise<Images> {
+    return await this.repo.findOne(id);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repo.delete(id);
+  }
 }

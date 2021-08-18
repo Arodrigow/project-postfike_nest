@@ -91,6 +91,14 @@ export class PostRepository implements IPostRepository {
     await this.repo.save(post);
   }
 
+  async deleteImage(
+    userId: string,
+    postId: string,
+    imageId: string,
+  ): Promise<void> {
+    await this.imagesService.deleteImage(imageId);
+  }
+
   private async isPostOwner(userId: string, postId: string): Promise<Post> {
     const post = await this.findPost(postId);
 
