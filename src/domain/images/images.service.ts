@@ -1,3 +1,4 @@
+import { Images } from './entities/images.entity';
 import { ImagesRepository } from './repositories/implementations/images.repository';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
@@ -12,9 +13,9 @@ export class ImagesService {
     private repo: ImagesRepository,
   ) {}
 
-  async uploadImages(images: Array<Express.Multer.File>) {
+  async uploadImages(images: Array<Express.Multer.File>): Promise<Images[]> {
     const s3 = new S3();
-
+    const imgs: Images[] = [];
     for (const x in images) {
       const dataBuffer = images[x].buffer;
       const fileName = images[x].originalname;
@@ -25,11 +26,12 @@ export class ImagesService {
           Key: `${uuidV4()}-${fileName}`,
         })
         .promise();
-      await this.repo.create({
+      imgs[x] = await this.repo.create({
         key: uploadResult.Key,
         url: uploadResult.Location,
       });
     }
+    return imgs;
   }
 
   async deleteImage(imageId: string) {

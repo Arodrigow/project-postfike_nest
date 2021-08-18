@@ -7,8 +7,9 @@ import { Inject } from '@nestjs/common';
 export class ImagesRepository implements IImagesRepository {
   constructor(@Inject('IMAGE_REPOSITORY') private repo: Repository<Images>) {}
 
-  async create(obj: CreateImageDto): Promise<void> {
-    await this.repo.save(obj);
+  async create(obj: CreateImageDto): Promise<Images> {
+    const img = this.repo.create(obj);
+    return await this.repo.save(img);
   }
 
   async find(id: string): Promise<Images> {

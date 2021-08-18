@@ -49,12 +49,15 @@ export class PostRepository implements IPostRepository {
     postId: string,
     images: Express.Multer.File[],
   ): Promise<void> {
-    await this.imagesService.uploadImages(images);
+    const post = await this.isPostOwner(userId, postId);
+    const imgs = await this.imagesService.uploadImages(images);
+    post.images = imgs;
+    await this.repo.save(post);
   }
 
   async findPost(id: string): Promise<Post> {
     const foundPost = await this.repo.findOne(id, {
-      relations: ['user', 'tags'],
+      relations: ['user', 'tags', 'images', 'bookmarks'],
     });
     return foundPost;
   }
@@ -74,7 +77,9 @@ export class PostRepository implements IPostRepository {
   }
 
   async deletePost(userId: string, id: string): Promise<void> {
-    await this.isPostOwner(userId, id);
+    const post = await this.isPostOwner(userId, id);
+    await this.ifImagesExist(post);
+    await this.ifBookmarkExist(post);
     await this.repo.delete(id);
   }
 
@@ -121,5 +126,19 @@ export class PostRepository implements IPostRepository {
       return null;
     }
     return bm;
+  }
+
+  private async ifImagesExist(post: Post) {
+    if (post.images.length >= 1) {
+      for (const x in post.images) {
+        await this.imagesService.deleteImage(post.images[x].id);
+      }
+    }
+  }
+  private async ifBookmarkExist(post: Post) {
+    if (post.bookmarks.length >= 1) {
+      for (const x in post.bookmarks)
+        await this.bookmarkRepo.delete(post.bookmarks[x].id);
+    }
   }
 }

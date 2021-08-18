@@ -1,3 +1,4 @@
+import { Images } from './../../images/entities/images.entity';
 import { Tag } from './../../tag/entities/tag.entity';
 import { User } from '../../user/entities/user.entity';
 import {
@@ -49,6 +50,9 @@ export class Post {
 
   @OneToMany(() => Bookmark, (bookmark) => bookmark.post)
   bookmarks: Bookmark[];
+
+  @OneToMany(() => Images, (image) => image.post)
+  images: Images[];
 
   constructor() {
     if (!this.id) {
