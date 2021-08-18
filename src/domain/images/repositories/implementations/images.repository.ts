@@ -1,3 +1,4 @@
+import { ImageNotFoundException } from './../../../../shared/errors/imageNotFound.exception';
 import { Images } from './../../entities/images.entity';
 import { Repository } from 'typeorm';
 import { CreateImageDto } from '../../dto/create-image.dto';
@@ -13,7 +14,12 @@ export class ImagesRepository implements IImagesRepository {
   }
 
   async find(id: string): Promise<Images> {
-    return await this.repo.findOne(id);
+    const img = await this.repo.findOne(id);
+    if (!img) {
+      throw new ImageNotFoundException();
+    }
+
+    return img;
   }
 
   async delete(id: string): Promise<void> {
