@@ -1,12 +1,12 @@
+import { NotBookmarkOwnerException } from './../../../../shared/errors/NotBookmarkOwner.exception copy';
+import { BookmarkNotFoundException } from './../../../../shared/errors/bookmarkNotFound.exception';
+import { NotPostOwnerException } from './../../../../shared/errors/NotPostOwner.exception';
+import { PostNotFoundException } from './../../../../shared/errors/postNotFound.exception';
+import { BookmarkAlreadyExistException } from './../../../../shared/errors/bookmarkAlreadyExist.exception';
 import { ImagesService } from './../../../images/images.service';
 import { UserService } from './../../../user/user.service';
 import { Bookmark } from '../../entities/bookmark.entity';
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
@@ -33,7 +33,7 @@ export class PostRepository implements IPostRepository {
   async createBookmark(postId: string, userId: string): Promise<void> {
     const bmExists = await this.bookmarkAlreadyExists(userId, postId);
     if (bmExists) {
-      throw new BadRequestException();
+      throw new BookmarkAlreadyExistException();
     }
     const post = await this.findPost(postId);
     const user = await this.userService.getUserProfile(userId);
@@ -59,6 +59,9 @@ export class PostRepository implements IPostRepository {
     const foundPost = await this.repo.findOne(id, {
       relations: ['user', 'tags', 'images', 'bookmarks'],
     });
+    if (!foundPost) {
+      throw new PostNotFoundException();
+    }
     return foundPost;
   }
 
@@ -85,11 +88,14 @@ export class PostRepository implements IPostRepository {
 
   async deleteBookmark(userId: string, postId: string): Promise<void> {
     const bm = await this.bookmarkAlreadyExists(userId, postId);
-    const post = await this.findPost(postId);
-
-    if (!bm || bm.user.id !== userId) {
-      throw new BadRequestException();
+    if (!bm) {
+      throw new BookmarkNotFoundException();
     }
+    if (bm.user.id !== userId) {
+      throw new NotBookmarkOwnerException();
+    }
+
+    const post = await this.findPost(postId);
 
     await this.bookmarkRepo.delete(bm.id);
     post.count_bookmark--;
@@ -101,6 +107,7 @@ export class PostRepository implements IPostRepository {
     postId: string,
     imageId: string,
   ): Promise<void> {
+    await this.isPostOwner(userId, postId);
     await this.imagesService.deleteImage(imageId);
   }
 
@@ -108,7 +115,7 @@ export class PostRepository implements IPostRepository {
     const post = await this.findPost(postId);
 
     if (post.user.id !== userId) {
-      throw new UnauthorizedException();
+      throw new NotPostOwnerException();
     }
     return post;
   }
