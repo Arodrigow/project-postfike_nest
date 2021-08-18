@@ -25,7 +25,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getUserProfile(@Request() req) {
-    //Alreay have access to user's id or email through JWT, use it
     const id = req.user.userId as string;
     return await this.userService.getUserProfile(id);
   }
@@ -33,7 +32,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put()
   async updateUser(@Request() req, @Body() obj: UpdateUserDto) {
-    //Alreay have access to user's id or email through JWT, use it
     const id = req.user.userId as string;
     return await this.userService.updateUser(id, obj);
   }
@@ -41,7 +39,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteUser(@Request() req) {
-    //Alreay have access to user's id or email through JWT, use it
     const id = req.user.userId as string;
     return await this.userService.deleteUser(id);
   }
