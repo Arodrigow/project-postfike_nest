@@ -26,11 +26,13 @@ export class UserRepository implements IUserRepository {
     if (!user) {
       throw new UserNotFoundException();
     }
-    return user;
+    const { password, ...userReturn } = user;
+    return userReturn;
   }
 
   async findUserByEmail(email: string): Promise<User> {
-    return await this.repo.findOne({ email });
+    const user = await this.repo.findOne({ email });
+    return user;
   }
   async updateUserProfile(id: string, obj: UpdateUserDto): Promise<void> {
     await this.findUserProfile(id);
