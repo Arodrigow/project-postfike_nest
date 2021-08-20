@@ -62,11 +62,19 @@ export class PostRepository implements IPostRepository {
     if (!foundPost) {
       throw new PostNotFoundException();
     }
+    const { password, ...user } = foundPost.user;
+    foundPost.user = user;
     return foundPost;
   }
 
   async findAll(): Promise<Post[]> {
-    return await this.repo.find({ relations: ['user', 'tags'] });
+    const posts = await this.repo.find({ relations: ['user', 'tags'] });
+    for (const x in posts) {
+      const { password, ...user } = posts[x].user;
+      posts[x].user = user;
+    }
+
+    return posts;
   }
 
   async updatePost(
