@@ -65,8 +65,16 @@ export class PostRepository implements IPostRepository {
     return foundPost;
   }
 
-  async findAll(): Promise<Post[]> {
-    return await this.repo.find({ relations: ['user', 'tags'] });
+  async findAll(pageNumber: number): Promise<Post[]> {
+    const take = 18;
+    const page = await this.repo.findAndCount({
+      relations: ['user', 'tags'],
+      take,
+      skip: take * (pageNumber - 1),
+    });
+
+    return page[0];
+    // return await this.repo.find({ relations: ['user', 'tags'] });
   }
 
   async updatePost(

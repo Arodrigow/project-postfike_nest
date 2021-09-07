@@ -23,8 +23,8 @@ export class PostService {
     return await this.repo.addImages(userId, postId, images);
   }
 
-  async findAll() {
-    return await this.repo.findAll();
+  async findAll(page: number) {
+    return await this.repo.findAll(page);
   }
 
   async findOne(id: string) {
