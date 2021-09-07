@@ -62,6 +62,8 @@ export class PostRepository implements IPostRepository {
     if (!foundPost) {
       throw new PostNotFoundException();
     }
+    const { password, ...user } = foundPost.user;
+    foundPost.user = user;
     return foundPost;
   }
 
@@ -73,8 +75,12 @@ export class PostRepository implements IPostRepository {
       skip: take * (pageNumber - 1),
     });
 
+    for (const x in page[0]) {
+      const { password, ...user } = page[0][x].user;
+      page[0][x].user = user;
+    }
+
     return page[0];
-    // return await this.repo.find({ relations: ['user', 'tags'] });
   }
 
   async updatePost(

@@ -21,7 +21,7 @@ export class User {
   @Column()
   phone: string;
   @Column()
-  password: string;
+  password?: string;
   @CreateDateColumn()
   created_at: Date;
   @UpdateDateColumn()
