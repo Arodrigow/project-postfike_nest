@@ -11,7 +11,7 @@ export interface IPostRepository {
     images: Express.Multer.File[],
   ): Promise<void>;
   findPost(id: string): Promise<Post>;
-  findAll(page: number): Promise<Post[]>;
+  findAll(page: number);
   updatePost(userId: string, id: string, obj: UpdatePostDto): Promise<void>;
   deletePost(userId: string, id: string): Promise<void>;
   deleteBookmark(userId: string, postId: string): Promise<void>;

@@ -67,7 +67,7 @@ export class PostRepository implements IPostRepository {
     return foundPost;
   }
 
-  async findAll(pageNumber: number): Promise<Post[]> {
+  async findAll(pageNumber: number) {
     const take = 18;
     const page = await this.repo.findAndCount({
       relations: ['user', 'tags'],
@@ -80,7 +80,7 @@ export class PostRepository implements IPostRepository {
       page[0][x].user = user;
     }
 
-    return page[0];
+    return { page: page[0], count: page[1] };
   }
 
   async updatePost(
