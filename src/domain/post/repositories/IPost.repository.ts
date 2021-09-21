@@ -12,6 +12,7 @@ export interface IPostRepository {
   ): Promise<void>;
   findPost(id: string): Promise<Post>;
   findAll(page: number);
+  search(page: number, q: string);
   updatePost(userId: string, id: string, obj: UpdatePostDto): Promise<void>;
   deletePost(userId: string, id: string): Promise<void>;
   deleteBookmark(userId: string, postId: string): Promise<void>;

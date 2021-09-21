@@ -7,7 +7,7 @@ import { ImagesService } from './../../../images/images.service';
 import { UserService } from './../../../user/user.service';
 import { Bookmark } from '../../entities/bookmark.entity';
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
 import { Post } from '../../entities/post.entity';
@@ -71,6 +71,9 @@ export class PostRepository implements IPostRepository {
     const take = 18;
     const page = await this.repo.findAndCount({
       relations: ['user', 'tags'],
+      order: {
+        count_bookmark: 'DESC'
+      },
       take,
       skip: take * (pageNumber - 1),
     });
@@ -80,6 +83,31 @@ export class PostRepository implements IPostRepository {
       page[0][x].user = user;
     }
 
+    return { page: page[0], count: page[1] };
+  }
+
+
+  async search(pageNumber: number, q: string) {
+    console.log("||||||||||||||||||OLA, QUERY:", q);
+    const take = 18;
+    const page = await this.repo.findAndCount({
+      relations: ['user', 'tags'],
+      where: [
+        { title: ILike(`%${q}%`) },
+        { description: ILike(`%${q}%`) },
+        { details: ILike(`%${q}%`) },
+      ],
+      order: {
+        count_bookmark: 'DESC'
+      },
+      take,
+      skip: take * (pageNumber - 1),
+    });
+
+    for (const x in page[0]) {
+      const { password, ...user } = page[0][x].user;
+      page[0][x].user = user;
+    }
     return { page: page[0], count: page[1] };
   }
 

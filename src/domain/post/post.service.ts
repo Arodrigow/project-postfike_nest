@@ -27,6 +27,10 @@ export class PostService {
     return await this.repo.findAll(page);
   }
 
+  async postSearch(page: number, q: string) {
+    return await this.repo.search(page, q);
+  }
+
   async findOne(id: string) {
     return await this.repo.findPost(id);
   }

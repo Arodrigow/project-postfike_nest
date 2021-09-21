@@ -52,6 +52,13 @@ export class PostController {
     return await this.postService.findAll(page);
   }
 
+  @Get('/search')
+  async postSearch(@Query() query) {
+    const page = query.page;
+    const q = query.q
+    return await this.postService.postSearch(page, q);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.postService.findOne(id);
